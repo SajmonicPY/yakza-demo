@@ -20,6 +20,50 @@ function Home() {
   const [allPosts, setAllPosts] = useState(null);
 
   const [searchText, setSearchText] = useState('');
+  const [searchedResults, setSearchedResults] = useState(null);
+  const [searchTimeout, setSearchTimeout] = useState(null);
+
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+
+      try {
+        const response = await fetch('https://yakza.onrender.com/api/v1/post', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if(response.ok) {
+          const result = await response.json();
+
+          setAllPosts(result.data.reverse());
+        }
+      } catch (error) {
+        alert(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPosts();
+
+  }, []);
+
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value);
+
+    setSearchTimeout(setTimeout(() => {
+      const searchResults = allPosts.filter((item) => 
+      item.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.prompt.toLowerCase().includes(searchText.toLowerCase()));
+
+      setSearchedResults(searchResults);
+    }, 500)
+    );
+  }
 
   return (
     <section className='max-w-7xl mx-auto'>
@@ -33,7 +77,14 @@ function Home() {
       </div>
 
       <div className='mt-16'>
-        <FormField />
+        <FormField 
+        labelName="Search posts"
+        type="text"
+        name="text"
+        placeholder="Searching is currently under development"
+        value={searchText}
+        handleChange={handleSearchChange}
+        />
       </div>
 
       <div className='mt-10'>
@@ -53,13 +104,13 @@ function Home() {
             grid-cols-1 gap-3'>
               {searchText ? (
                 <RenderCards 
-                  data={[]}
-                  title="No search results found"
+                  data={searchedResults}
+                  title="Community showcase is still under development"
                   />
               ) : (
                 <RenderCards 
-                  data={[]}
-                  title="No posts found"
+                  data={allPosts}
+                  title="Community showcase is still under development"
                 />
               )}
             </div>

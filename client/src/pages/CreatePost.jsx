@@ -13,37 +13,68 @@ function CreatePost() {
   })
   const [generatingImg, setGeneratingImg] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [imageGenerated, setImageGenerated] = useState(false); // New state variable
 
   const generateImage = async () => {
-    if(form.prompt) {
+    if (form.prompt) {
       try {
         setGeneratingImg(true);
-        const response = await fetch('http://localhost:8080/api/v1/yakza', {
+        const response = await fetch('https://yakza.onrender.com/api/v1/yakza', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ prompt: form.prompt }),
-        })
-        if(!response.ok) {
-          console.log(response)
+        });
+        if (!response.ok) {
+          console.log(response);
         }
-      
-        
-        const data = await response.blob();
-        setForm({...form, photo: URL.createObjectURL(data)})
+  
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        const downloadUrl = imageUrl + '#' + encodeURIComponent('image.jpeg');
+        setForm({ ...form, photo: downloadUrl });
+        setImageGenerated(true); // Set imageGenerated to true
       } catch (error) {
         alert(error);
       } finally {
         setGeneratingImg(false);
       }
     } else {
-      alert('Please enter a prompt')
+      alert('Please enter a prompt');
     }
-  }
+  };
 
-  const handleSubmit = () => {
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.download = 'generated_image.jpeg';
+    link.href = form.photo;
+    link.click();
+  };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    if(form.prompt && form.photo) {
+      setLoading(true);
+      try {
+        const response = await fetch('https://yakza.onrender.com/api/v1/post', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(form)
+        })
+        await response.json();
+        navigate('/');
+      } catch (err) {
+        alert(err)
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      alert('Please enter a prompt and generate an image')
+    }
   }
 
   const handleChange = (e) => {
@@ -87,7 +118,7 @@ function CreatePost() {
           handleSurpriseMe={handleSurpriseMe}
           />
 
-          <div className='realtive bg-gray-50 border border-gray-300 text-gray-900 
+          <div className='relative bg-gray-50 border border-gray-300 text-gray-900 
           text-sm rounded-lg focus:ring-blue-500 focus:border-500 
           w-64 p-3h-64 flex justify-center items-center'>
             {form.photo ? ( 
@@ -124,16 +155,29 @@ function CreatePost() {
             {generatingImg ? 'Generating...' : 'Generate'}
           </button>
         </div>
-
+        <div className='mt-5 flex- gap-5'>
+          <a
+            href={form.photo}
+            download={`${form.prompt}.jpg`}
+            className={`mt-3 text-white font-medium rounded-md text-sm
+            w-full sm:w-auto px-5 py-2.5 text-center
+            ${form.photo ? 'bg-blue-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'}
+            `}
+            disabled={!form.photo}
+          >
+          Download
+          </a>
+        </div>
         <div className='mt-10'>
           <p className='mt-2 text-[#666e75] text-[14px]'>Once you have created the image you 
             want, you can share it with others in the community</p>
             <button
+            disabled
             type='submit'
             className='mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm
             w-full sm:w-auto px-5 py-2.5 text-center'
             >
-              {loading ? 'Sharing...' : 'Share with the community'}
+              {loading ? 'Sharing...' : 'Under development'}
             </button>
         </div>
       </form>
