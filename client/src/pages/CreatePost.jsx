@@ -129,8 +129,8 @@ function CreatePost() {
               />
             ): (
               <img 
-              src={preview}
-              alt={preview}
+              src='https://i.ibb.co/QX2p5s6/preview.png'
+              alt='preview'
               className='w-9/12 h-9/12 object-contain opacity-40'           
               />
             )}
