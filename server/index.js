@@ -6,6 +6,7 @@ import connectDB from './mongodb/connect.js';
 import { connect } from 'mongoose';
 import postRoutes from './routes/postRoutes.js';
 import yakzaRoutes from './routes/yakzaRoutes.js';
+import speechRootes from './routes/speechRoutes.js';
 
 dotenv.config();
 
@@ -15,7 +16,7 @@ app.use(express.json({limit: '50mb'}));
 
 app.use('/api/v1/post', postRoutes);
 app.use('/api/v1/yakza', yakzaRoutes);
-
+app.use('/api/v1/speech', speechRootes)
 
 app.get('/', async (req,res) => {
     res.send('Hello from Yakza!');

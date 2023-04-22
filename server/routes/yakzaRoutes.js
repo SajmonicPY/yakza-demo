@@ -7,7 +7,7 @@ dotenv.config();
 const router = express.Router();
 
 router.route('/').get((req, res) => {
-  res.status(200).json({ message: 'Hello from DALL-E!' });
+  res.status(200).json({ message: 'Hello from Yakza!' });
 });
 
 router.route('/').post(async (req, res) => {
@@ -25,7 +25,6 @@ router.route('/').post(async (req, res) => {
   });
 
   if (!response.ok) {
-    console.log(response);
     res.status(500).json({ error: 'Failed to generate image.' });
     return;
   }
