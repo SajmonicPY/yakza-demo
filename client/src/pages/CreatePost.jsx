@@ -28,7 +28,15 @@ function CreatePost() {
         });
         if (!response.ok) {
           console.log(response);
+          setForm({
+            ...form,
+            photo: 'https://i.ibb.co/QX2p5s6/preview.png'
+          
+          })
+          alert("We're experiencing exceptionally high demand. Please hang tight as we work on scaling our systems");
+          return;
         }
+        
         
   
         const blob = await response.blob();
