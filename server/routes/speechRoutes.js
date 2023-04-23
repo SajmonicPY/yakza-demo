@@ -19,14 +19,16 @@ router.route('/').post(async (req, res) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${process.env.API_TOKEN}`
+                    'Authorization': `Bearer ${process.env.HUGGING_FACE_API_KEY}`
                 },
                 body: JSON.stringify({
                     "inputs": text
                 })
             });
     
-            const { audio_content } = await response.json();
+            const responseData = await response.json();
+            console.log('Response data:', responseData);
+            const { audio_content } = responseData;
     
             res.send(audio_content);
         } catch (error) {
@@ -37,6 +39,7 @@ router.route('/').post(async (req, res) => {
     
     const { text } = req.body;
     if (text) {
+        console.log('Synthesizing audio for text:', text);
         synthesizeAudio(text);
     } else {
         res.status(400).send({ error: 'Missing text parameter.' });
