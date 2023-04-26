@@ -19,7 +19,7 @@ function CreatePost() {
     if (form.prompt) {
       try {
         setGeneratingImg(true);
-        const response = await fetch('http://localhost:8080/api/v1/yakza', {
+        const response = await fetch('https://yakza.onrender.com//api/v1/yakza', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ function CreatePost() {
     if(form.prompt && form.photo) {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:8080/api/v1/post', {
+        const response = await fetch('https://yakza.onrender.com//api/v1/post', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
